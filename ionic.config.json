@@ -1,0 +1,7 @@
+{
+  "name": "project-events",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
