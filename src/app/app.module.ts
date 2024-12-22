@@ -8,14 +8,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { AngularFireModule } from '@angular/fire/compat';
-import { FirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore'; // Utilise AngularFirestoreModule ici
 import { environment } from '../environments/environment';
+
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, AppRoutingModule,
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,  // Supprime le doublon ici
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    FirestoreModule],
+    AngularFirestoreModule,
+    HttpClientModule,
+  ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
