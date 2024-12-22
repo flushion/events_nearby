@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+    <!-- Titre dynamique : soit "Éditer l'événement" soit "Créer un événement" -->
+    <ion-title>{{ eventId ? 'Éditer l\'événement' : 'Créer un événement' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="event">
+    <ion-card-header>
+      <!-- Titre du formulaire : "Éditer" ou "Créer" selon l'existence de eventId -->
+      <ion-card-title>{{ eventId ? 'Éditer' : 'Créer' }} l'événement</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <!-- Champ de saisie pour le titre de l'événement -->
+      <form #eventForm="ngForm" (ngSubmit)="saveEvent(eventForm)">
+        <ion-item>
+          <ion-label position="stacked">Titre</ion-label>
+          <ion-input [(ngModel)]="event.title" name="title" required minlength="3" placeholder="Titre de l'événement" #title="ngModel"></ion-input>
+          <div *ngIf="title.invalid && title.touched" class="error-message">
+            Titre requis (min 3 caractères)
+          </div>
+        </ion-item>
+
+        <!-- Champ de saisie pour la description de l'événement -->
+        <ion-item>
+          <ion-label position="stacked">Description</ion-label>
+          <ion-textarea [(ngModel)]="event.description" name="description" required minlength="10" placeholder="Description de l'événement" #description="ngModel"></ion-textarea>
+          <div *ngIf="description.invalid && description.touched" class="error-message">
+            Description requise (min 10 caractères)
+          </div>
+        </ion-item>
+
+        <!-- Champ de saisie pour le lieu de l'événement -->
+        <ion-item>
+          <ion-label position="stacked">Lieu</ion-label>
+          <ion-input [(ngModel)]="event.location" name="location" required placeholder="Lieu de l'événement" (ionInput)="onSearchAddress()" #location="ngModel"></ion-input>
+          <div *ngIf="location.invalid && location.touched" class="error-message">
+            Lieu requis
+          </div>
+        </ion-item>
+
+        <!-- Liste des suggestions de lieux -->
+        <ion-list *ngIf="suggestions.length > 0">
+          <ion-item *ngFor="let suggestion of suggestions" (click)="selectAddress(suggestion)">
+            {{ suggestion.display_name }}
+          </ion-item>
+        </ion-list>
+
+        <!-- Champ de sélection de la date et de l'heure -->
+        <ion-item>
+          <ion-label position="stacked">Date et Heure</ion-label>
+          <ion-datetime [(ngModel)]="event.date" name="date" required displayFormat="YYYY-MM-DDTHH:mm" placeholder="Sélectionner une date et une heure" #date="ngModel"></ion-datetime>
+          <div *ngIf="date.invalid && date.touched" class="error-message">
+            Date et heure requises
+          </div>
+        </ion-item>
+
+        <!-- Boutons pour enregistrer ou annuler -->
+        <ion-button expand="full" color="primary" [disabled]="eventForm.invalid" type="submit">{{ eventId ? 'Mettre à jour' : 'Créer' }}</ion-button>
+        <ion-button expand="full" color="light" (click)="cancel()">Annuler</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,17 +1,36 @@
-<ion-header [translucent]="true">
+<!-- src/app/tab3/tab3.page.html -->
+
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>À propos de l'application</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <!-- Section À propos -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>À propos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ (about$ | async)?.description }}</p>
+    </ion-card-content>
+  </ion-card>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <!-- Section Fonctionnalités -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Fonctionnalités</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ul>
+        <li *ngFor="let feature of (about$ | async)?.features">{{ feature }}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Contact Button -->
+  <ion-button expand="block" color="primary" (click)="contact('illia.linkevych4@etu.univ-lorraine.fr')">
+    Contactez-nous
+  </ion-button>
 </ion-content>

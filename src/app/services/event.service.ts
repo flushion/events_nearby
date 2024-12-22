@@ -1,32 +1,56 @@
+// src/app/services/event.service.ts
+
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+// Définir l'interface de l'événement
+export interface Event {
+  id: string;
+  title: string;
+  location: string;
+  description: string;
+  date: string;
+  latitude: number | null;
+  longitude: number | null;
+}
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class EventService {
-  private eventsSubject = new BehaviorSubject<any[]>([]);
-  events$ = this.eventsSubject.asObservable();
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(
+    private firestore: AngularFirestore,
+    private http: HttpClient
+  ) {}
 
-  fetchEvents() {
-    this.firestore
-      .collection('events')
-      .valueChanges({ idField: 'id' })
-      .subscribe((events) => this.eventsSubject.next(events));
+  // Méthode pour ajouter un événement
+  async addEvent(event: Omit<Event, 'id'>): Promise<void> {
+    try {
+      // Ajouter l'événement dans Firestore (id sera généré automatiquement)
+      const eventRef = await this.firestore.collection('events').add(event);
+      console.log('Événement ajouté avec ID:', eventRef.id);
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de l\'événement:', error);
+    }
   }
 
-  createEvent(event: any) {
-    return this.firestore.collection('events').add(event);
+  // Recherche d'adresses via l'API OpenStreetMap
+  searchAddress(location: string): Observable<any> {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+    return this.http.get(url);
   }
 
-  updateEvent(id: string, event: any) {
-    return this.firestore.collection('events').doc(id).update(event);
+  // Récupérer tous les événements depuis Firestore
+  getEvents(): Observable<Event[]> {
+    return this.firestore.collection<Event>('events').valueChanges({ idField: 'id' });
   }
 
-  deleteEvent(id: string) {
-    return this.firestore.collection('events').doc(id).delete();
+  // Supprimer un événement
+  deleteEvent(eventId: string): Promise<void> {
+    return this.firestore.collection('events').doc(eventId).delete();
   }
+
 }

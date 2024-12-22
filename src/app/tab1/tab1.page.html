@@ -1,32 +1,39 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Évènements à proximité</ion-title>
+    <ion-title>Événements</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFilter()">
+        {{ filterNearby ? 'À proximité' : 'Tous les événements' }}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar placeholder="Rechercher un événement"></ion-searchbar>
+    <ion-searchbar 
+      [(ngModel)]="searchTerm" 
+      (ionInput)="onSearchChange()" 
+      debounce="500" 
+      placeholder="Rechercher un événement">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-card *ngFor="let event of events">
+    <ion-card *ngFor="let event of filteredEvents">
       <ion-card-header>
         <ion-card-title>{{ event.title }}</ion-card-title>
         <ion-card-subtitle>{{ event.location }}</ion-card-subtitle>
+        <ion-card-subtitle>
+          {{ event.date | date: 'medium' }}
+        </ion-card-subtitle>
       </ion-card-header>
 
       <ion-card-content>
         {{ event.description }}
       </ion-card-content>
 
-      <ion-button fill="clear">Favoris</ion-button>
-      <ion-button fill="clear">Détails</ion-button>
+      <ion-button fill="outline" color="secondary" (click)="editEvent(event)">Modifier</ion-button>
+      <ion-button fill="outline" color="danger" (click)="deleteEvent(event.id)">Supprimer</ion-button>
     </ion-card>
   </ion-list>
-
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button>
-      <ion-icon name="navigate-outline" (click)="getCurrentLocation()"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>
