@@ -92,6 +92,11 @@ export class EditEventPage implements OnInit {
           color: 'success',
         });
         toast.present();
+        
+        // Réinitialiser le formulaire après la sauvegarde
+        this.event = {}; // Efface les données du formulaire
+        this.suggestions = []; // Efface les suggestions de lieu
+  
         this.router.navigate(['/tabs/tab1']);
       } catch (error) {
         const toast = await this.toastController.create({
@@ -106,6 +111,8 @@ export class EditEventPage implements OnInit {
 
   // Annuler et revenir à la liste des événements
   cancel() {
+    this.event = {}; // Efface les données du formulaire
+    this.suggestions = []; // Efface les suggestions de lieu
     this.router.navigate(['/tabs/tab1']);
   }
 }
